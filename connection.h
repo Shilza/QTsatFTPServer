@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QTcpSocket>
+#include <QFile>
+#include <QDir>
 #include "def.h"
 
 class Connection : public QObject
@@ -21,6 +23,7 @@ private:
     QTcpSocket *socket;
     QString extension;
     QString filePath;
+    quint32 sizeOfAttachment;
     bool canPost = false;
 
     void serverTryPost(QJsonObject request);

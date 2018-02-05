@@ -1,6 +1,5 @@
 #include "ftpserver.h"
 
-
 FTPServer::FTPServer(QObject *parent) : QTcpServer(parent){
     socket = new QTcpSocket;
     listen(QHostAddress::LocalHost, SERVER_PORT);
@@ -55,7 +54,7 @@ void FTPServer::serverSocketReading(){
                                         else
                                             return "Documents/";
                                     }() + QString::number(request.value("ID").toInt()) + '_' +
-                                    QString::number(QDateTime::currentDateTime().toTime_t()));
+                                    QString::number(QDateTime::currentDateTime().toTime_t())+'.'+connection->getExtension());
         }
         connection->send(QJsonDocument(response).toJson());
     }

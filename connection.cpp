@@ -23,6 +23,7 @@ void Connection::setFilePath(QString filePath){
 
 void Connection::serverTryPost(QJsonObject request){
     extension = request.value("Extension").toString();
+    sizeOfAttachment = request.value("Size").toInt();
     request.erase(request.find("Extension"));
     request.erase(request.find("Size"));
     request.insert("Socket handle", socket->socketDescriptor());
@@ -46,7 +47,21 @@ void Connection::controller(){
         response.insert("Value", "Deny");
     }
     else if(canPost){
+        QStringList list = filePath.split('/');
+        list.removeLast();
 
+        QString dirPath = "";
+        for(QString a : list)
+            dirPath += a + '/';
+        QDir().mkpath(dirPath);
+
+        QFile file(filePath);
+        file.open(QIODevice::Append);
+        file.write(receivedObject);
+        file.close();
+
+        if(file.size() >= sizeOfAttachment)
+            sizeOfAttachment = canPost = 0;
     }
 
     socket->write(QJsonDocument(response).toJson());
