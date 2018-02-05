@@ -30,6 +30,7 @@ void Connection::serverTryPost(QJsonObject request){
 }
 
 void Connection::controller(){
+    qDebug() << "Sos";
     QByteArray receivedObject = socket->readAll();
 
     QJsonParseError error;

@@ -40,14 +40,14 @@ void FTPServer::serverSocketReading(){
     QJsonObject request = QJsonDocument::fromJson(receivedObject).object();
 
     if(request.value("Target").toString() == "Post"){
-        Connection *connection = connections.value(request.value("Socket handle"));
+        Connection *connection = connections.value(request.value("Socket handle").toInt());
         response.insert("Target", "Post");
         response.insert("Value", request.value("Value").toString());
         if(request.value("Value").toString() == "Allow"){
             //DON'T READ THIS
             connection->setFilePath(request.value("Location").toString() + '/' +
                                     //I WARNED
-                                    [&connection]()->QString(){
+                                    [&connection]()->QString{
                                         QString extension = connection->getExtension();
                                         if(extension == "jpg" || extension == "png" || extension == "bmp"
                                         || extension == "jpeg" || extension == "jpe" || extension == "image")
