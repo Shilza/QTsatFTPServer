@@ -43,18 +43,18 @@ void FTPServer::serverSocketReading(){
         response.insert("Target", "Post");
         response.insert("Value", request.value("Value").toString());
         if(request.value("Value").toString() == "Allow"){
-            //DON'T READ THIS
-            connection->setFilePath(request.value("Location").toString() + '/' +
-                                    //I WARNED
-                                    [&connection]()->QString{
-                                        QString extension = connection->getExtension();
-                                        if(extension == "jpg" || extension == "png" || extension == "bmp"
-                                        || extension == "jpeg" || extension == "jpe" || extension == "image")
-                                            return "Images/";
-                                        else
-                                            return "Documents/";
-                                    }() + QString::number(request.value("ID").toInt()) + '_' +
-                                    QString::number(QDateTime::currentDateTime().toTime_t())+'.'+connection->getExtension());
+
+            QString filePath = request.value("Location").toString() + '/';
+            QString extension = connection->getExtension();
+            if(extension == "jpg" || extension == "png" || extension == "bmp"
+                    || extension == "jpeg" || extension == "jpe" || extension == "image")
+                filePath += "Images/";
+            else
+                filePath += "Documents/";
+            filePath += QString::number(request.value("ID").toInt()) + '_' +
+                    QString::number(QDateTime::currentDateTime().toTime_t()) + '.' + connection->getExtension();
+
+            connection->setFilePath(filePath);
         }
         connection->send(QJsonDocument(response).toJson());
     }

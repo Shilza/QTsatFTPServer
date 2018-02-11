@@ -1,4 +1,5 @@
 #include "connection.h"
+#include <QDebug>
 
 Connection::Connection(qintptr handle, QObject *parent) : QObject(parent){
     socket = new QTcpSocket(this);
@@ -45,6 +46,7 @@ void Connection::controller(){
 
         response.insert("Target", "Post");
         response.insert("Value", "Deny");
+        socket->write(QJsonDocument(response).toJson());
     }
     else if(canPost){
         QStringList list = filePath.split('/');
@@ -60,11 +62,14 @@ void Connection::controller(){
         file.write(receivedObject);
         file.close();
 
-        if(file.size() >= sizeOfAttachment)
+        response.insert("Target", "Loading");
+        if(file.size() >= sizeOfAttachment){
             sizeOfAttachment = canPost = 0;
+            response.insert("Reference", filePath);
+            response.insert("Value", 100);
+            socket->write(QJsonDocument(response).toJson());
+        }
     }
-
-    socket->write(QJsonDocument(response).toJson());
 }
 
 void Connection::disconnecting(){
