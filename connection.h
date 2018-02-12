@@ -27,6 +27,7 @@ private:
     bool canPost = false;
 
     void serverTryPost(QJsonObject request);
+    void serverTryGet();
 
 signals:
     void disconnected(qintptr handle);

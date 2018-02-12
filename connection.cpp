@@ -31,8 +31,11 @@ void Connection::serverTryPost(QJsonObject request){
     emit sendToServer(QJsonDocument(request).toJson());
 }
 
+void Connection::serverTryGet(){
+
+}
+
 void Connection::controller(){
-    qDebug() << "Sos";
     QByteArray receivedObject = socket->readAll();
 
     QJsonParseError error;
@@ -41,12 +44,17 @@ void Connection::controller(){
     QJsonObject request = QJsonDocument::fromJson(receivedObject, &error).object();
 
     if(error.error == QJsonParseError::NoError){
-        if(request.value("Target").toString() == "Post" && request.contains("Size") && request.value("Size").toInt() <= MAX_AFFIX_SIZE)
-            return serverTryPost(request);
+        if(request.value("Target").toString() == "Post"){
+            if(request.contains("Size") && request.value("Size").toInt() <= MAX_AFFIX_SIZE)
+                return serverTryPost(request);
 
-        response.insert("Target", "Post");
-        response.insert("Value", "Deny");
-        socket->write(QJsonDocument(response).toJson());
+            response.insert("Target", "Post");
+            response.insert("Value", "Deny");
+            socket->write(QJsonDocument(response).toJson());
+        }
+        else if(request.value("Target").toString() == "Get"){
+
+        }
     }
     else if(canPost){
         QStringList list = filePath.split('/');
