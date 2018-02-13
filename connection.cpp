@@ -31,10 +31,6 @@ void Connection::serverTryPost(QJsonObject request){
     emit sendToServer(QJsonDocument(request).toJson());
 }
 
-void Connection::serverTryGet(){
-
-}
-
 void Connection::controller(){
     QByteArray receivedObject = socket->readAll();
 
@@ -53,7 +49,12 @@ void Connection::controller(){
             socket->write(QJsonDocument(response).toJson());
         }
         else if(request.value("Target").toString() == "Get"){
+            request.insert("Socket handle", socket->socketDescriptor());
+            emit sendToServer(QJsonDocument(request).toJson());
 
+            response.insert("Target", "Get");
+            response.insert("SizeOfAttachment", QFileInfo(request.value("Reference").toString()).size());
+            socket->write(QJsonDocument(response).toJson());
         }
     }
     else if(canPost){

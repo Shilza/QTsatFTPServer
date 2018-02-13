@@ -58,6 +58,21 @@ void FTPServer::serverSocketReading(){
         }
         connection->send(QJsonDocument(response).toJson());
     }
+    else if(request.value("Target").toString() == "Get"){
+        Connection *connection = connections.value(request.value("Socket handle").toInt());
+
+        if(request.value("Value").toString() == "Deny"){
+            response.insert("Target", "Get");
+            response.insert("Value", request.value("Value").toString());
+            connection->send(QJsonDocument(response).toJson());
+        }
+        else{
+            QFile file(request.value("Reference").toString());
+            file.open(QIODevice::ReadOnly);
+            connection->send(file.readAll());
+            file.close();
+        }
+    }
 }
 
 

@@ -7,6 +7,7 @@
 #include <QJsonParseError>
 #include <QTcpSocket>
 #include <QFile>
+#include <QFileInfo>
 #include <QDir>
 #include "def.h"
 
@@ -27,7 +28,6 @@ private:
     bool canPost = false;
 
     void serverTryPost(QJsonObject request);
-    void serverTryGet();
 
 signals:
     void disconnected(qintptr handle);
