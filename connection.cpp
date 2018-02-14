@@ -39,6 +39,7 @@ void Connection::controller(){
     QJsonObject response;
     QJsonObject request = QJsonDocument::fromJson(receivedObject, &error).object();
 
+    qDebug() << request;
     if(error.error == QJsonParseError::NoError){
         if(request.value("Target").toString() == "Post"){
             if(request.contains("Size") && request.value("Size").toInt() <= MAX_AFFIX_SIZE)
