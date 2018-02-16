@@ -39,7 +39,6 @@ void Connection::controller(){
     QJsonObject response;
     QJsonObject request = QJsonDocument::fromJson(receivedObject, &error).object();
 
-    qDebug() << request;
     if(error.error == QJsonParseError::NoError){
         if(request.value("Target").toString() == "Post"){
             if(request.contains("Size") && request.value("Size").toInt() <= MAX_AFFIX_SIZE)
@@ -75,8 +74,20 @@ void Connection::controller(){
         response.insert("Target", "Loading");
         if(file.size() >= sizeOfAttachment){
             sizeOfAttachment = canPost = 0;
+
             response.insert("Reference", filePath);
             response.insert("Value", 100);
+            if(filePath.indexOf("Avatars/") != -1){
+                response.insert("Target", "AvatarChanged");
+
+                QJsonObject serverResponse;
+                serverResponse.insert("Target", "AvatarChanged");
+                serverResponse.insert("ID", filePath.split("/").at(1).toInt());
+                serverResponse.insert("Reference", filePath);
+
+                emit sendToServer(QJsonDocument(serverResponse).toJson());
+            }
+            filePath = "";
             socket->write(QJsonDocument(response).toJson());
         }
     }

@@ -43,6 +43,7 @@ void FTPServer::serverSocketReading(){
         response.insert("Target", "Post");
         response.insert("Value", request.value("Value").toString());
         if(request.value("Value").toString() == "Allow"){
+            response.insert("Location", request.value("Location").toString());
 
             QString filePath = request.value("Location").toString() + '/';
             QString extension = connection->getExtension();
@@ -54,6 +55,10 @@ void FTPServer::serverSocketReading(){
             filePath += QString::number(request.value("ID").toInt()) + '_' +
                     QString::number(QDateTime::currentDateTime().toTime_t()) + '.' + connection->getExtension();
 
+            if(filePath.indexOf("/Avatars") != -1){
+                QStringList list = filePath.split("/");
+                filePath = list.at(0) + "/" + list.at(1) + "/Images/Avatars/" + list.back();
+            }
             connection->setFilePath(filePath);
         }
         connection->send(QJsonDocument(response).toJson());
