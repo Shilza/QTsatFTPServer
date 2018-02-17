@@ -50,6 +50,8 @@ void FTPServer::serverSocketReading(){
             if(extension == "jpg" || extension == "png" || extension == "bmp"
                     || extension == "jpeg" || extension == "jpe" || extension == "image")
                 filePath += "Images/";
+            else if(extension == "mp3")
+                filePath += "Audio/";
             else
                 filePath += "Documents/";
             filePath += QString::number(request.value("ID").toInt()) + '_' +

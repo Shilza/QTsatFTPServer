@@ -87,7 +87,7 @@ void Connection::controller(){
 
                 emit sendToServer(QJsonDocument(serverResponse).toJson());
             }
-            filePath = "";
+            extension = filePath = "";
             socket->write(QJsonDocument(response).toJson());
         }
     }
